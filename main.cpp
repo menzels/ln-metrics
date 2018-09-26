@@ -101,6 +101,7 @@ int main()
   }
   cout << "biconnected components: " << aps.biconnectedComponents.size() << endl;
   for(auto bc : aps.biconnectedComponents) {
+    // filter components that are only connected to one component
     size_t edgeCount = 2;
     for(auto n : bc) {
       edgeCount = min(edgeCount, g.nodeVect[n]->channels.size());
