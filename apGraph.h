@@ -16,6 +16,14 @@ namespace AP {
 struct Result {
   std::unordered_set<size_t> articulationPoints;
   std::vector<std::unordered_set<size_t>> biconnectedComponents;
+
+  long long countComponentsForVertex(size_t node) const {
+    return count_if(biconnectedComponents.begin(),
+                    biconnectedComponents.end(),
+                    [node](std::unordered_set<size_t> set){
+      return set.count(node) > 0;
+    });
+  }
 };
 
 struct Edge {

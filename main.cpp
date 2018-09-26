@@ -85,6 +85,7 @@ int main()
   cout << "nodes:" << g.nodes.size() << endl;
   cout << "channels:" << g.channels.size() << endl;
   cout << "capacity:" << g.capacity / 100000000. << endl;
+  cout << endl;
 
   AP::Graph apg(g.nodes.size());
 
@@ -95,11 +96,15 @@ int main()
   auto aps = apg.getResult();
 
   cout << "articulation points: " << aps.articulationPoints.size() << endl;
+  cout << "node alias (count of biconnected components it is part of)" << endl;
   for(auto ap : aps.articulationPoints) {
     auto node = g.nodeVect[ap];
-    cout << node->name << " " << node->channels.size() << endl;
+    cout << node->name << " (" << aps.countComponentsForVertex(ap) << ")" << endl;
   }
+  cout << endl;
+
   cout << "biconnected components: " << aps.biconnectedComponents.size() << endl;
+  cout << "(number of nodes in component){ names of nodes(count of channels) }" << endl;
   for(auto bc : aps.biconnectedComponents) {
     // filter components that are only connected to one component
     size_t edgeCount = 2;
