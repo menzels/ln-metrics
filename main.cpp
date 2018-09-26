@@ -110,9 +110,13 @@ int main()
       continue;
     }
     cout << "(" << bc.size() << "){ ";
-    for(auto gn : bc) {
-      auto n = g.nodeVect[gn];
-      cout << n->name << "(" << n->channels.size() << "), ";
+    if(bc.size() > 10) {
+      cout << "... ";
+    } else {
+      for(auto gn : bc) {
+        auto n = g.nodeVect[gn];
+        cout << n->name << "(" << n->channels.size() << "), ";
+      }
     }
     cout << "}" << endl;
   }
