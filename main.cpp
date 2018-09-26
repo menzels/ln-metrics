@@ -101,6 +101,13 @@ int main()
   }
   cout << "biconnected components: " << aps.biconnectedComponents.size() << endl;
   for(auto bc : aps.biconnectedComponents) {
+    size_t edgeCount = 2;
+    for(auto n : bc) {
+      edgeCount = min(edgeCount, g.nodeVect[n]->channels.size());
+    }
+    if(edgeCount == 1) {
+      continue;
+    }
     cout << "(" << bc.size() << "){ ";
     for(auto gn : bc) {
       auto n = g.nodeVect[gn];
