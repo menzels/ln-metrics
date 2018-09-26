@@ -40,6 +40,7 @@ public:
   void addEdge(size_t v, size_t w);   // function to add an edge to graph
 
   Result getResult();
+  std::vector<size_t> getDistances();
 
 private:
   size_t V;    // No. of vertices
@@ -55,6 +56,7 @@ private:
   std::unordered_set<size_t> handleEdges(std::stack<Edge>& stack,
                                          size_t u,
                                          size_t v);
+  size_t bfs(size_t start);
 };
 
 Graph::Graph(size_t V)
@@ -83,6 +85,47 @@ std::unordered_set<size_t> Graph::handleEdges(std::stack<Edge>& stack, size_t u,
       return nodes;
     }
   }
+}
+
+size_t Graph::bfs(size_t start)
+{
+  std::deque<size_t> queue;     //Double-ended queue
+  std::vector<size_t> distance(V, NIL);
+  std::vector<bool> visited(V, false);
+
+  queue.push_back(start);
+  distance[start] = 0;
+  while(!queue.empty ())
+  {
+    auto u = queue.front();
+    visited[u] = true;
+    queue.pop_front();
+    for(auto i = adj[u].begin(); i != adj[u].end(); ++i)
+    {
+      size_t v = *i;  // v is current adjacent of u
+
+      /* if distance of neighbour of v from start node is greater than sum of distance of v from start node and edge weight between v and its neighbour (distance between v and its neighbour of v) ,then change it */
+
+      if(distance[u] + 1 < distance[v])
+      {
+        distance[v] = distance[u] + 1;
+
+        /*if edge weight between v and its neighbour is 0 then push it to front of
+        double ended queue else push it to back*/
+
+        queue.push_back(v);
+      }
+    }
+  }
+
+  size_t maxDistance = 0;
+  for(size_t i = 0; i < V; i ++){
+    if(visited[i]) {
+      maxDistance = std::max(maxDistance, distance[i]);
+    }
+  }
+
+  return maxDistance;
 }
 
 // A recursive function that find articulation points using DFS traversal
@@ -127,7 +170,7 @@ void Graph::recurseDFS(size_t u,
 
       // Check if the subtree rooted with v has a connection to
       // one of the ancestors of u
-      low[u]  = std::min(low[u], low[v]);
+      low[u] = std::min(low[u], low[v]);
 
       // node is articulation point when one of the following is true
       if(parent[u] == NIL && children > 1) {
@@ -195,5 +238,15 @@ Result Graph::getResult()
     }
   }
   return result;
+}
+
+std::vector<size_t> Graph::getDistances()
+{
+  std::vector<size_t> res;
+  for(size_t i = 0; i < V; i ++){
+    auto distance = bfs(i);
+    res.push_back(distance);
+  }
+  return res;
 }
 }

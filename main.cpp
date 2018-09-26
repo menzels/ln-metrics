@@ -78,21 +78,8 @@ Graph graphFromJson(string file) {
   return g;
 }
 
-int main()
+void printAPBC(const Graph& g, AP::Graph& apg)
 {
-  auto g = graphFromJson("C:\\Users\\smenzel\\Documents\\lngraph\\test.json");
-
-  cout << "nodes:" << g.nodes.size() << endl;
-  cout << "channels:" << g.channels.size() << endl;
-  cout << "capacity:" << g.capacity / 100000000. << endl;
-  cout << endl;
-
-  AP::Graph apg(g.nodes.size());
-
-  for(auto& chan : g.channels) {
-    apg.addEdge(chan.second.nodeA->number, chan.second.nodeB->number);
-  }
-
   auto aps = apg.getResult();
 
   cout << "articulation points: " << aps.articulationPoints.size() << endl;
@@ -124,6 +111,40 @@ int main()
       }
     }
     cout << "}" << endl;
+  }
+  cout << endl;
+}
+
+int main()
+{
+  auto g = graphFromJson("C:\\Users\\smenzel\\Documents\\lngraph\\graph.json");
+
+  cout << "nodes:" << g.nodes.size() << endl;
+  cout << "channels:" << g.channels.size() << endl;
+  cout << "capacity:" << g.capacity / 100000000. << endl;
+  cout << endl;
+
+  AP::Graph apg(g.nodes.size());
+
+  for(auto& chan : g.channels) {
+    apg.addEdge(chan.second.nodeA->number, chan.second.nodeB->number);
+  }
+
+  printAPBC(g, apg);
+
+  auto distances = apg.getDistances();
+  map<size_t, size_t> dist;
+
+  for(auto& n : g.nodes) {
+    auto& node = n.second;
+    auto d = distances[node.number];
+    dist[d]++;
+  }
+
+  cout << "highest shortest distances between any two nodes" << endl;
+  cout << "(count x distance)" << endl;
+  for(auto d : dist) {
+    cout << d.second << " x " << d.first << endl;
   }
 
   return 0;
