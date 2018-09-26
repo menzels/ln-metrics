@@ -189,7 +189,9 @@ Result Graph::getResult()
         nodes.insert(stack.top().v);
         stack.pop();
       }
-      result.biconnectedComponents.push_back(nodes);
+      if(nodes.size() > 0) {
+        result.biconnectedComponents.push_back(nodes);
+      }
     }
   }
   return result;
