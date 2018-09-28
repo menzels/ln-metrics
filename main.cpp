@@ -10,7 +10,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-constexpr int64_t transferAmount = 10000000; // milli satoshi (10ksat)
+constexpr int64_t cTtransferAmount = 10000000; // milli satoshi (10ksat)
 
 template <typename T>
 struct reversion_wrapper { T& iterable; };
@@ -172,7 +172,7 @@ void printPathCost(const Graph& g, digraph::Graph& dig,
 {
   auto path = dig.path(from, to);
   auto cost = dig.cost(from, to);
-  auto costPercentage = cost / static_cast<double>(transferAmount) * 100;
+  auto costPercentage = cost / static_cast<double>(cTtransferAmount) * 100;
 
   cout << "cheapest path from " << g.nodeVect[from]->name
        << " to " << g.nodeVect[to]->name
@@ -228,7 +228,6 @@ void printCentrality(const Graph& g, const digraph::Graph& dig) {
 
 int main()
 {
-  std::cout << "sizeof size_t" << sizeof(size_t) << std::endl;
   auto g = graphFromJson("C:\\Users\\smenzel\\Documents\\lngraph\\graph.json");
 
   cout << "nodes:" << g.nodes.size() << endl;
@@ -252,14 +251,16 @@ int main()
     dig.addEdge(chan.second.nodeA->number,
                 chan.second.nodeB->number,
                 chan.second.feeA
-                + chan.second.feerateA * transferAmount / 1000000);
+                + chan.second.feerateA * cTtransferAmount / 1000000,
+                chan.second.capacity * 1000);
     dig.addEdge(chan.second.nodeB->number,
                 chan.second.nodeA->number,
                 chan.second.feeB
-                + chan.second.feerateB * transferAmount / 1000000);
+                + chan.second.feerateB * cTtransferAmount / 1000000,
+                chan.second.capacity * 1000);
   }
 
-  dig.floydWarshall();
+  dig.floydWarshall(cTtransferAmount);
 
   cout << "max cost: " << dig.maxCost() << endl;
   cout << endl;
